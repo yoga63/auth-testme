@@ -10,6 +10,7 @@ var port = process.env.PORT || 3001;
 var User     = require('./models/User');
 
 // Connect to DB
+console.log( "MONGO_URL=[" + process.env.MONGO_URL+"]");
 mongoose.connect(process.env.MONGO_URL);
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,27 +23,29 @@ app.use(function(req, res, next) {
     next();
 });
 
-
-
 app.post('/authenticate', function(req, res) {
+    console.log( "/authenticate:email/password="+req.body.email+"/"+req.body.password);
     User.findOne({email: req.body.email, password: req.body.password}, function(err, user) {
         if (err) {
             res.json({
                 type: false,
                 data: "Error occured: " + err
             });
+            console.log( "Error occured: " + err );
         } else {
             if (user) {
                res.json({
                     type: true,
                     data: user,
                     token: user.token
-                }); 
+                });
+                console.log( "SUCCESS: Authenticated");
             } else {
                 res.json({
                     type: false,
                     data: "Incorrect email/password"
-                });    
+                });
+                console.log( "Incorrect email/password" );
             }
         }
     });
@@ -50,6 +53,7 @@ app.post('/authenticate', function(req, res) {
 
 
 app.post('/signin', function(req, res) {
+    console.log( "/signin:email/password="+req.body.email+"/"+req.body.password);
     User.findOne({email: req.body.email, password: req.body.password}, function(err, user) {
         if (err) {
             res.json({
@@ -82,6 +86,8 @@ app.post('/signin', function(req, res) {
 });
 
 app.get('/me', ensureAuthorized, function(req, res) {
+    console.log( "/me:email/password="+req.body.email+"/"+req.body.password);
+    console.log( "/me:token="+req.token);
     User.findOne({token: req.token}, function(err, user) {
         if (err) {
             res.json({

@@ -14,7 +14,8 @@ lib-cov
 *.gz
 *.idea
 *.idea/
-.idea/
+.idea/*
+.idea
 .bower-cache/*
 .bower-registry/*
 public/bower/*
